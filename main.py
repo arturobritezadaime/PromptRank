@@ -1,7 +1,9 @@
 import re
 import spacy
+import textstat
 from langdetect import detect
 from sentence_transformers import SentenceTransformer, util
+
 # ================================
 # 🔹 Función para detectar complejidad del prompt
 # ================================
@@ -149,6 +151,16 @@ def evaluar_estructura_gramatical(prompt: str) -> int:
     elif proporción < 0.5:
         return 2
     return 3
+
+def evaluar_legibilidad(prompt: str) -> int:
+    """Usa textstat para medir la legibilidad (Flesch Reading Ease)."""
+    score = textstat.flesch_reading_ease(prompt)
+    if score > 70:
+        return 1  # muy fácil
+    elif score > 50:
+        return 2  # moderado
+    return 3  # difícil o técnico
+
 # Solicitar al usuario que introduzca un prompt
 entrada_usuario = input("Introduce tu prompt: ")
 
@@ -157,8 +169,10 @@ longitud = evaluar_longitud_prompt(entrada_usuario)
 complejidad_vocabulario = evaluar_diversidad_vocabulario(entrada_usuario)
 complejidad_razonamiento = evaluar_deteccion_razonamiento(entrada_usuario)
 complejidad_estructura = evaluar_estructura_gramatical(entrada_usuario)
+complejidad_legibilidad = evaluar_legibilidad(entrada_usuario)
 
 print(f"Complejidad por longitud es: {longitud}")
 print(f"Complejidad por diversidad de vocabulario es: {complejidad_vocabulario}")
 print(f"Complejidad por razonamiento es: {complejidad_razonamiento}")
 print(f"Complejidad por estructura gramatical es: {complejidad_estructura}")
+print(f"Complejidad por legibilidad: {complejidad_legibilidad}")
