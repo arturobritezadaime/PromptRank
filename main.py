@@ -176,3 +176,4 @@ print(f"Complejidad por diversidad de vocabulario es: {complejidad_vocabulario}"
 print(f"Complejidad por razonamiento es: {complejidad_razonamiento}")
 print(f"Complejidad por estructura gramatical es: {complejidad_estructura}")
 print(f"Complejidad por legibilidad: {complejidad_legibilidad}")
+print("Complejidad total (mejorar formula):", longitud + complejidad_vocabulario + complejidad_razonamiento + complejidad_estructura + complejidad_legibilidad)
