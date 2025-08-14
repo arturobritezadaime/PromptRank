@@ -72,7 +72,7 @@ def evaluar_deteccion_razonamiento(prompt: str) -> int:
     prompt_embedding = modelo_embeddings.encode(prompt, convert_to_tensor=True)
 
     # 🔹 Señales fuertes 
-    señales_fuertes = [
+    senales_fuertes = [
         # Español
         "Elabora un plan detallado para resolver el problema",
         "Justifica tu respuesta utilizando argumentos lógicos",
@@ -95,7 +95,7 @@ def evaluar_deteccion_razonamiento(prompt: str) -> int:
     ]
 
     # 🔸 Señales medias 
-    señales_medias = [
+    senales_medias = [
         # Español 
         "Resume los puntos principales del contenido",
         "Compara dos alternativas posibles",
@@ -214,15 +214,14 @@ def calcular_complejidad_total(prompt: str) -> int:
     legibilidad = evaluar_legibilidad(prompt)
 
     # Fórmula de puntuación ponderada
-    raw_score = (longitud * 0.5) + \
-                (vocabulario * 2.0) + \
-                (razonamiento * 3.5) + \
-                (estructura * 1.0) + \
-                (legibilidad * 2.0)
+    raw_score = (longitud * 1.5) + \
+            (vocabulario * 1.5) + \
+            (razonamiento * 3) + \
+            (estructura * 3) + \
+            (legibilidad * 1.5)
 
-    # Normalizar la puntuación a una escala de 1 a 10
-    min_raw_score = (1 * 0.5) + (1 * 2.0) + (1 * 3.5) + (1 * 1.0) + (1 * 2.0)
-    max_raw_score = (3 * 0.5) + (3 * 2.0) + (3 * 3.5) + (3 * 1.0) + (3 * 2.0)
+    min_raw_score = (1*0.2) + (1*0.5) + (1*3.5) + (1*3) + (1*3) 
+    max_raw_score = (3*0.2) + (3*0.5) + (3*3.5) + (3*3) + (3*3) 
 
     normalized_score = 1 + (9 * (raw_score - min_raw_score) / (max_raw_score - min_raw_score))
 
