@@ -2,7 +2,7 @@ import re
 # ================================
 # 🔹 Función para detectar complejidad del prompt
 # ================================
-def evaluar_complejidad_prompt(prompt: str) -> int:
+def evaluar_longitud_prompt(prompt: str) -> int:
     """
     Evalúa la complejidad de un prompt segun longitud.
     """
@@ -48,11 +48,23 @@ def evaluar_diversidad_vocabulario(prompt: str) -> int:
         return 2
     else:
         return 3        
+
+def evaluar_deteccion_razonamiento(prompt: str) -> int:
+    """Detecta señales de pensamiento crítico, planificación o lógica."""
+    señales = ["plan", "analyze", "analizar", "think", "pensar", "reason", "razonar"]
+    if any(pal in prompt.lower() for pal in señales):
+        return 3
+    elif "why" in prompt.lower() or "how" in prompt.lower():
+        return 2
+    return 1
 # Solicitar al usuario que introduzca un prompt
 entrada_usuario = input("Introduce tu prompt: ")
 
 # Evaluar la complejidad del prompt ingresado
-complejidad = evaluar_complejidad_prompt(entrada_usuario)
+longitud = evaluar_longitud_prompt(entrada_usuario)
 complejidad_vocabulario = evaluar_diversidad_vocabulario(entrada_usuario)
-print(f"La complejidad del prompt es: {complejidad}")
+complejidad_razonamiento = evaluar_deteccion_razonamiento(entrada_usuario)
+
+print(f"La longitud del prompt es: {longitud}")
 print(f"Complejidad por diversidad de vocabulario: {complejidad_vocabulario}")
+print(f"Complejidad por razonamiento: {complejidad_razonamiento}")
