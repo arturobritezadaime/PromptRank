@@ -49,7 +49,7 @@ def evaluar_diversidad_vocabulario(prompt: str) -> int:
     
     if proporcion_diversidad < 0.3:
         return 1
-    elif proporcion_diversidad < 0.7:
+    elif proporcion_diversidad < 0.6:
         return 2
     else:
         return 3        
@@ -160,7 +160,35 @@ def evaluar_legibilidad(prompt: str) -> int:
     elif score > 50:
         return 2  # moderado
     return 3  # difícil o técnico
+def calcular_complejidad_total(prompt: str) -> int:
+    """
+    Calcula una puntuación de complejidad del prompt de 1 a 10.
+    """
+    # 1. Obtener las puntuaciones de cada métrica
+    longitud = evaluar_longitud_prompt(prompt)
+    vocabulario = evaluar_diversidad_vocabulario(prompt)
+    razonamiento = evaluar_deteccion_razonamiento(prompt)
+    estructura = evaluar_estructura_gramatical(prompt)
+    legibilidad = evaluar_legibilidad(prompt)
 
+    # 2. Aplicar la fórmula con pesos ponderados
+    raw_score = (longitud * 0.5) + \
+                (vocabulario * 2.0) + \
+                (razonamiento * 3.5) + \
+                (estructura * 1.0) + \
+                (legibilidad * 2.0)
+
+    # 3. Normalizar la puntuación a una escala de 1 a 10
+    min_raw_score = (1 * 0.5) + (1 * 2.0) + (1 * 3.5) + (1 * 1.0) + (1 * 2.0)  # Mínimo posible: 9
+    max_raw_score = (3 * 0.5) + (3 * 2.0) + (3 * 3.5) + (3 * 1.0) + (3 * 2.0)  # Máximo posible: 31.5
+
+
+    normalized_score = 1 + (9 * (raw_score - min_raw_score) / (max_raw_score - min_raw_score))
+    
+    # 4. Redondear y asegurarse de que el resultado esté en el rango de 1 a 10
+    final_score = int(round(max(1, min(10, normalized_score))))
+    
+    return final_score
 # Solicitar al usuario que introduzca un prompt
 entrada_usuario = input("Introduce tu prompt: ")
 
@@ -170,10 +198,12 @@ complejidad_vocabulario = evaluar_diversidad_vocabulario(entrada_usuario)
 complejidad_razonamiento = evaluar_deteccion_razonamiento(entrada_usuario)
 complejidad_estructura = evaluar_estructura_gramatical(entrada_usuario)
 complejidad_legibilidad = evaluar_legibilidad(entrada_usuario)
+puntuacion_final = calcular_complejidad_total(entrada_usuario)
 
+print("\n--- Resultados ---")
 print(f"Complejidad por longitud es: {longitud}")
 print(f"Complejidad por diversidad de vocabulario es: {complejidad_vocabulario}")
 print(f"Complejidad por razonamiento es: {complejidad_razonamiento}")
 print(f"Complejidad por estructura gramatical es: {complejidad_estructura}")
 print(f"Complejidad por legibilidad: {complejidad_legibilidad}")
-print("Complejidad total (mejorar formula):", longitud + complejidad_vocabulario + complejidad_razonamiento + complejidad_estructura + complejidad_legibilidad)
+print(f"La puntuación de complejidad de tu prompt es: {puntuacion_final}/10")
